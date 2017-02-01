@@ -4,12 +4,21 @@ clear all; clc;
 flag_showImages = true;
 flag_writeDicom = false;
 flag_writeMatlab = true;
-starting_folder_index = 73;
+starting_folder_index = 1;
 starting_file_index = 1;
 dataset_name = '';
 src_folder = 'directory_holding_study_folders\';
 dst_folder = 'directory_to_write_the_anonymized_records\';
 csvSummaryFile = 'DataSummary.csv';
+
+%Fields that are kept in the anonymized DICOM. 
+KeepsFields = {'PatientID',...
+    'StudyDate', 'SeriesDate', 'AcquisitionDateTime', ...
+    'StudyInstanceUID','SOPInstanceUID', 'SOPClassUID',...
+    'Manufacturer','ManufacturerModelName', 'TransducerData',...
+    'SequenceOfUltrasoundRegions',...
+    'Width', 'Height', 'BitDepth', 'FrameTime', 'HeartRate', 'NumberOfFrames'
+    };
 
 %%
 dir_dates = dir(src_folder);
@@ -31,18 +40,7 @@ if flag_writeDicom && ~exist(dcm_anon_dir)
     mkdir(dcm_anon_dir);
 end
 
-%%
-%Fields that are kept in the anonymized DICOM. 
-KeepsFields = {'PatientID',...
-    'StudyDate', 'SeriesDate', 'AcquisitionDateTime', ...
-    'StudyInstanceUID','SOPInstanceUID', 'SOPClassUID',...
-    'Manufacturer','ManufacturerModelName', 'TransducerData',...
-    'SequenceOfUltrasoundRegions',...
-    'Width', 'Height', 'BitDepth', 'FrameTime', 'HeartRate', 'NumberOfFrames'
-    };
-
-
-%Creates a CSV that stores all fields except SequenceOfUltrasoundRegions
+%% Creates a CSV that stores all fields except SequenceOfUltrasoundRegions
 csvFile = fopen([dst_folder csvSummaryFile], 'w');
 fprintf(csvFile, '%s', KeepsFields{1});
 for dVal = 2 : numel(KeepsFields)                
