@@ -8,7 +8,7 @@ The summary of the processed files are stored in a csv file in the destination f
 Parameters which may come handy are set at the beginning of the main.m file.
 Meta data fields which are transfered to the final anonymized records is set in the 'KeepFields' parameter.
 
-Patient-identifying information is masked out of the DICOM images. Since each manufacturer and ultrasound machine has different settings and locations for labels, the maskPatientInfo.m file deals with them in a case-by-case fashion.
+Patient-identifying information is masked out of the DICOM images using the maskPatientInfo function. Since each manufacturer and ultrasound machine has different settings and locations for labels, the maskPatientInfo.m file deals with them in a case-by-case fashion.
 If you ran into a new manufacturer/machine, you need to follow the same trend to figure out the correct window to mask. 
 
 Feel free to send pull requests in case you encountered new manufacturer/machines or refactored the code.
