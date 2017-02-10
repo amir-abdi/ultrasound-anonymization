@@ -37,7 +37,10 @@ elseif ((strcmp(manuf,'GE Healthcare') || strcmp(manuf,'GE Vingmed Ultrasound') 
         else
             %has no patient data! Weird, right? 
             return
-        end            
+        end      
+    elseif strcmp(machine, 'EchoPAC PC SW-Only')
+        patDicomImage(1:round(size(patDicomImage,1) *2/5),...
+                      1:1:round(size(patDicomImage,2) * 1.4/5),:) = 0;    
     else       
         assert(false, message);
     end

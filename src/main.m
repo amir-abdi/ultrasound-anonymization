@@ -4,8 +4,8 @@ clear all; clc;
 flag_showImages = true;
 flag_writeDicom = false;
 flag_writeMatlab = true;
-starting_folder_index = 436;
-starting_file_index = 1;
+starting_folder_index = 768;
+starting_file_index = 32;
 dataset_name = '821cases_EF-Estimation_2017.2.3\';
 src_folder = dataset_name;
 dst_folder = ['L:\' dataset_name];
@@ -41,7 +41,12 @@ if flag_writeDicom && ~exist(dcm_anon_dir)
 end
 
 %% Creates a CSV that stores all fields except SequenceOfUltrasoundRegions
-csvFile = fopen([dst_folder csvSummaryFile], 'w');
+if ~exist([dst_folder csvSummaryFile])
+    csvFile = fopen([dst_folder csvSummaryFile], 'w');
+else
+    csvFile = fopen([dst_folder csvSummaryFile], 'a');
+end
+
 fprintf(csvFile, '%s', KeepsFields{1});
 for dVal = 2 : numel(KeepsFields)                
     fprintf(csvFile, ',%s', KeepsFields{dVal});                
@@ -133,5 +138,5 @@ end
 %%
 fclose(csvFile);
 
-
+disp('Done');
 
