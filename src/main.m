@@ -4,11 +4,11 @@ clear all; clc;
 flag_showImages = true;
 flag_writeDicom = false;
 flag_writeMatlab = true;
-starting_folder_index = 1;
+starting_folder_index = 436;
 starting_file_index = 1;
-dataset_name = '';
-src_folder = 'directory_holding_study_folders\';
-dst_folder = 'directory_to_write_the_anonymized_records\';
+dataset_name = '821cases_EF-Estimation_2017.2.3\';
+src_folder = dataset_name;
+dst_folder = ['L:\' dataset_name];
 csvSummaryFile = 'DataSummary.csv';
 
 %Fields that are kept in the anonymized DICOM. 
@@ -114,12 +114,15 @@ for ix = starting_folder_index : numel(dir_dates)
             
             
         catch err
-            disp('Did not Save');    
+            disp([num2str(ix) ':' num2str(kx) '    Did not Save']);    
             disp(err);
             if ~isempty(findstr('[NotCoded]', err.message))                
                 disp('Asserting as there might be a new manufacturer/model');
-                imshow(Patient.DicomImage(:,:,:,1));
+                imshow(patDicomImage(:,:,:,1));
                 assert(false, err.message);
+            else
+                disp(err.message);
+                continue
             end            
         end
 
