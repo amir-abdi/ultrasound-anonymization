@@ -4,11 +4,11 @@ clear all; clc;
 flag_showImages = true;
 flag_writeDicom = false;
 flag_writeMatlab = true;
-starting_folder_index = 768;
-starting_file_index = 32;
-dataset_name = '821cases_EF-Estimation_2017.2.3\';
-src_folder = dataset_name;
-dst_folder = ['L:\' dataset_name];
+starting_folder_index = 1;
+starting_file_index = 1;
+dataset_name = 'EF_Estimation_509cases_2017.5.10\';
+src_folder = 'L:\Final4class_since2011_round3';
+dst_folder = ['Z:\' dataset_name];
 csvSummaryFile = 'DataSummary.csv';
 
 %Fields that are kept in the anonymized DICOM. 
@@ -43,15 +43,14 @@ end
 %% Creates a CSV that stores all fields except SequenceOfUltrasoundRegions
 if ~exist([dst_folder csvSummaryFile])
     csvFile = fopen([dst_folder csvSummaryFile], 'w');
+    fprintf(csvFile, '%s', KeepsFields{1});    
+    for dVal = 2 : numel(KeepsFields)                
+        fprintf(csvFile, ',%s', KeepsFields{dVal});                
+    end
+    fprintf(csvFile, ',filename\n');
 else
     csvFile = fopen([dst_folder csvSummaryFile], 'a');
 end
-
-fprintf(csvFile, '%s', KeepsFields{1});
-for dVal = 2 : numel(KeepsFields)                
-    fprintf(csvFile, ',%s', KeepsFields{dVal});                
-end
-fprintf(csvFile, ',filename\n');
 
 %%
 for ix = starting_folder_index : numel(dir_dates)
@@ -69,21 +68,6 @@ for ix = starting_folder_index : numel(dir_dates)
         %Try to read file
         try
             patDicomInfo = dicominfo(patFile);                        
-
-            fprintf(csvFile, '%s', patDicomInfo.(KeepsFields{1}));
-            for dVal = 2 : numel(KeepsFields)
-                if isfield(patDicomInfo,KeepsFields{dVal}) && isstruct(patDicomInfo.(KeepsFields{dVal})) == 0
-                      if ischar(patDicomInfo.(KeepsFields{dVal}))                    
-                        fprintf(csvFile, ',%s', patDicomInfo.(KeepsFields{dVal}));
-                      else
-                          fprintf(csvFile, ',%s', num2str(patDicomInfo.(KeepsFields{dVal})));
-                      end
-                else
-                      fprintf(csvFile, ',%s', '');
-                end
-            end
-            
-            fprintf(csvFile, ',%s\n', dir_studies(kx).name);
 
             patDicomImage = dicomread(patFile);
             
@@ -116,6 +100,20 @@ for ix = starting_folder_index : numel(dir_dates)
                 disp([num2str(ix) ':' num2str(kx) '   File saved: ' matlabfileName]);
             end
             
+            fprintf(csvFile, '%s', patDicomInfo.(KeepsFields{1}));
+            for dVal = 2 : numel(KeepsFields)
+                if isfield(patDicomInfo,KeepsFields{dVal}) && isstruct(patDicomInfo.(KeepsFields{dVal})) == 0
+                      if ischar(patDicomInfo.(KeepsFields{dVal}))                    
+                        fprintf(csvFile, ',%s', patDicomInfo.(KeepsFields{dVal}));
+                      else
+                          fprintf(csvFile, ',%s', num2str(patDicomInfo.(KeepsFields{dVal})));
+                      end
+                else
+                      fprintf(csvFile, ',%s', '');
+                end
+            end
+            
+            fprintf(csvFile, ',%s\n', dir_studies(kx).name);
             
             
         catch err
